@@ -51,8 +51,11 @@ export default function Home() {
   }, []);
 
 const handleBooking = async () => {
+    console.log("Próba rezerwacji..."); // DEBUG
+
     // 1. Walidacja pól
     if (!date || !selectedSlot || !selectedSubject || !parentName || !studentName || !email || !phone) {
+      console.log("Błąd walidacji: Nie wszystkie pola są wypełnione.");
       toast({
         title: "Błąd",
         description: "Proszę wypełnić wszystkie wymagane pola.",
@@ -61,10 +64,11 @@ const handleBooking = async () => {
       return;
     }
 
-    // 2. Pobranie URL ze zmiennej środowiskowej (z przedrostkiem NEXT_PUBLIC_)
+    // 2. Pobranie URL
     const DISCORD_WEBHOOK_URL = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL;
 
     if (!DISCORD_WEBHOOK_URL) {
+      console.error("Błąd: Brak Webhooka w zmiennych środowiskowych!");
       toast({
         title: "Błąd konfiguracji",
         description: "System nie znalazł adresu Webhooka. Sprawdź ustawienia Vercel.",
@@ -77,7 +81,7 @@ const handleBooking = async () => {
       username: "System Rezerwacji",
       embeds: [{
         title: "📅 Nowa rezerwacja lekcji!",
-        color: 3447003, // Kolor niebieski
+        color: 3447003,
         fields: [
           { name: "Uczeń", value: studentName, inline: true },
           { name: "Rodzic", value: parentName, inline: true },
@@ -92,6 +96,33 @@ const handleBooking = async () => {
         timestamp: new Date().toISOString(),
       }]
     };
+
+    // --- TEGO PRAWDOPODOBNIE BRAKOWAŁO ---
+    try {
+      console.log("Wysyłanie do Discorda...");
+      const response = await fetch(DISCORD_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(discordMessage),
+      });
+
+      if (response.ok) {
+        console.log("Sukces!");
+        setStep(3); // Przejście do ekranu podziękowania
+      } else {
+        const errorData = await response.text();
+        console.error("Discord zwrócił błąd:", errorData);
+        throw new Error("Discord API error");
+      }
+    } catch (error) {
+      console.error("Błąd podczas fetch:", error);
+      toast({
+        title: "Błąd wysyłki",
+        description: "Nie udało się przesłać rezerwacji. Spróbuj ponownie.",
+        variant: "destructive"
+      });
+    }
+  };
 
     try {
       // 3. Wysyłka danych Webhookiem
