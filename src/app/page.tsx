@@ -95,6 +95,7 @@ const handleBooking = async () => {
           { name: "Godzina", value: selectedSlot, inline: true },
           { name: "Przedmiot", value: subjects.find(s => s.id === selectedSubject)?.name || "Nieznany", inline: false },
           { name: "Wiadomość / Opis", value: description || "Brak opisu", inline: false },
+          { name: "Szybkie akcje", value: `[➕ Dodaj do Google Calendar](${gCalUrl})`, inline: false },
         ],
         footer: { text: "qJonathan.pl - System Rezerwacji" },
         timestamp: new Date().toISOString(),
