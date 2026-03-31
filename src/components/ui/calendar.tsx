@@ -36,7 +36,7 @@ function Calendar({
           "h-full w-full p-0 font-medium transition-colors hover:bg-gray-50 text-gray-900 aria-selected:text-white"
         ),
         selected: "bg-primary text-white hover:bg-primary focus:bg-primary rounded-none shadow-none",
-        today: "bg-gray-50/50 font-bold",
+        today: "border-2 border-primary text-primary font-bold bg-primary/5 shadow-inner",
         outside: "text-gray-300 opacity-50",
         disabled: "text-gray-100 opacity-50",
         hidden: "invisible",
