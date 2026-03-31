@@ -1,0 +1,22 @@
+{
+  "placeholderImages": [
+    {
+      "id": "tutor-hero",
+      "description": "Tutoring session",
+      "imageUrl": "https://picsum.photos/seed/tutor1/1200/800",
+      "imageHint": "tutoring education"
+    },
+    {
+      "id": "tutor-profile",
+      "description": "Jonathan Ciupera Ferro profile",
+      "imageUrl": "https://picsum.photos/seed/jonathan/400/400",
+      "imageHint": "professional man"
+    },
+    {
+      "id": "physics-notes",
+      "description": "Handwritten physics notes",
+      "imageUrl": "https://picsum.photos/seed/notes/800/600",
+      "imageHint": "physics math"
+    }
+  ]
+}
