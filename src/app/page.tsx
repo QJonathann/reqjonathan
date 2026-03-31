@@ -51,8 +51,6 @@ export default function Home() {
   }, []);
 
 const handleBooking = async () => {
-    console.log("Próba rezerwacji..."); 
-
     // 1. Walidacja pól
     if (!date || !selectedSlot || !selectedSubject || !parentName || !studentName || !email || !phone) {
       toast({
@@ -63,7 +61,19 @@ const handleBooking = async () => {
       return;
     }
 
-    // 2. Pobranie URL ze zmiennych środowiskowych
+    // 2. Pobranie URL ze zmiennej środowiskowej
+const handleBooking = async () => {
+    // 1. Walidacja pól
+    if (!date || !selectedSlot || !selectedSubject || !parentName || !studentName || !email || !phone) {
+      toast({
+        title: "Błąd",
+        description: "Proszę wypełnić wszystkie wymagane pola.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // 2. Pobranie URL
     const DISCORD_WEBHOOK_URL = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL;
 
     if (!DISCORD_WEBHOOK_URL) {
@@ -96,49 +106,8 @@ const handleBooking = async () => {
       }]
     };
 
-    // 4. Wysyłka danych (TYLKO RAZ)
+    // 4. Wysyłka danych Webhookiem
     try {
-      const response = await fetch(DISCORD_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(discordMessage),
-      });
-
-      if (response.ok) {
-        setStep(3); // Sukces - przejście do ostatniego kroku
-      } else {
-        throw new Error("Discord API error");
-      }
-    } catch (error) {
-      console.error("Błąd wysyłki:", error);
-      toast({
-        title: "Błąd wysyłki",
-        description: "Nie udało się przesłać rezerwacji. Spróbuj ponownie.",
-        variant: "destructive"
-      });
-    }
-  };
-
-      if (response.ok) {
-        console.log("Sukces!");
-        setStep(3); // Przejście do ekranu podziękowania
-      } else {
-        const errorData = await response.text();
-        console.error("Discord zwrócił błąd:", errorData);
-        throw new Error("Discord API error");
-      }
-    } catch (error) {
-      console.error("Błąd podczas fetch:", error);
-      toast({
-        title: "Błąd wysyłki",
-        description: "Nie udało się przesłać rezerwacji. Spróbuj ponownie.",
-        variant: "destructive"
-      });
-    }
-  };
-
-    try {
-      // 3. Wysyłka danych Webhookiem
       const response = await fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
