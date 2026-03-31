@@ -51,11 +51,10 @@ export default function Home() {
   }, []);
 
 const handleBooking = async () => {
-    console.log("Próba rezerwacji..."); // DEBUG
+    console.log("Próba rezerwacji..."); 
 
     // 1. Walidacja pól
     if (!date || !selectedSlot || !selectedSubject || !parentName || !studentName || !email || !phone) {
-      console.log("Błąd walidacji: Nie wszystkie pola są wypełnione.");
       toast({
         title: "Błąd",
         description: "Proszę wypełnić wszystkie wymagane pola.",
@@ -64,11 +63,10 @@ const handleBooking = async () => {
       return;
     }
 
-    // 2. Pobranie URL
+    // 2. Pobranie URL ze zmiennych środowiskowych
     const DISCORD_WEBHOOK_URL = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL;
 
     if (!DISCORD_WEBHOOK_URL) {
-      console.error("Błąd: Brak Webhooka w zmiennych środowiskowych!");
       toast({
         title: "Błąd konfiguracji",
         description: "System nie znalazł adresu Webhooka. Sprawdź ustawienia Vercel.",
@@ -77,6 +75,7 @@ const handleBooking = async () => {
       return;
     }
 
+    // 3. Przygotowanie wiadomości
     const discordMessage = {
       username: "System Rezerwacji",
       embeds: [{
@@ -97,14 +96,28 @@ const handleBooking = async () => {
       }]
     };
 
-    // --- TEGO PRAWDOPODOBNIE BRAKOWAŁO ---
+    // 4. Wysyłka danych (TYLKO RAZ)
     try {
-      console.log("Wysyłanie do Discorda...");
       const response = await fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(discordMessage),
       });
+
+      if (response.ok) {
+        setStep(3); // Sukces - przejście do ostatniego kroku
+      } else {
+        throw new Error("Discord API error");
+      }
+    } catch (error) {
+      console.error("Błąd wysyłki:", error);
+      toast({
+        title: "Błąd wysyłki",
+        description: "Nie udało się przesłać rezerwacji. Spróbuj ponownie.",
+        variant: "destructive"
+      });
+    }
+  };
 
       if (response.ok) {
         console.log("Sukces!");
