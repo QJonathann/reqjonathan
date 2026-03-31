@@ -71,6 +71,16 @@ const handleBooking = async () => {
       return;
     }
 
+// --- GENEROWANIE LINKU DO KALENDARZA ---
+    const [hours, minutes] = selectedSlot.split(':').map(Number);
+    const startDate = new Date(date);
+    startDate.setHours(hours, minutes);
+    const endDate = new Date(startDate);
+    endDate.setHours(startDate.getHours() + 1); // Zakładamy 1h lekcji
+
+    const formatGCal = (d: Date) => d.toISOString().replace(/-|:|\.\d+/g, "");
+    const gCalUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent("Lekcja: " + studentName)}&dates=${formatGCal(startDate)}/${formatGCal(endDate)}&details=${encodeURIComponent("Przedmiot: " + (subjects.find(s => s.id === selectedSubject)?.name || "") + "\nOpis: " + description)}&location=Online`;
+
     const discordMessage = {
       username: "System Rezerwacji",
       embeds: [{
@@ -84,7 +94,8 @@ const handleBooking = async () => {
           { name: "Data", value: format(date, 'd MMMM yyyy', { locale: pl }), inline: true },
           { name: "Godzina", value: selectedSlot, inline: true },
           { name: "Przedmiot", value: subjects.find(s => s.id === selectedSubject)?.name || "Nieznany", inline: false },
-          { name: "Opis", value: description || "Brak dodatkowego opisu", inline: false },
+          // DODAJEMY KLIKALNY LINK TUTAJ:
+          { name: "Szybkie akcje", value: `[➕ Dodaj do Google Calendar](${gCalUrl})`, inline: false },
         ],
         footer: { text: "qJonathan.pl - System Rezerwacji" },
         timestamp: new Date().toISOString(),
