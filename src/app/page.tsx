@@ -49,9 +49,8 @@ export default function Home() {
   useEffect(() => {
     setToday(startOfToday());
   }, []);
-
+  
 const handleBooking = async () => {
-    // 1. Walidacja pól
     if (!date || !selectedSlot || !selectedSubject || !parentName || !studentName || !email || !phone) {
       toast({
         title: "Błąd",
@@ -61,31 +60,17 @@ const handleBooking = async () => {
       return;
     }
 
-    // 2. Pobranie URL ze zmiennej środowiskowej
-const handleBooking = async () => {
-    // 1. Walidacja pól
-    if (!date || !selectedSlot || !selectedSubject || !parentName || !studentName || !email || !phone) {
-      toast({
-        title: "Błąd",
-        description: "Proszę wypełnić wszystkie wymagane pola.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // 2. Pobranie URL
     const DISCORD_WEBHOOK_URL = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL;
 
     if (!DISCORD_WEBHOOK_URL) {
       toast({
         title: "Błąd konfiguracji",
-        description: "System nie znalazł adresu Webhooka. Sprawdź ustawienia Vercel.",
+        description: "Brak adresu Webhooka na Vercel.",
         variant: "destructive"
       });
       return;
     }
 
-    // 3. Przygotowanie wiadomości
     const discordMessage = {
       username: "System Rezerwacji",
       embeds: [{
@@ -106,7 +91,6 @@ const handleBooking = async () => {
       }]
     };
 
-    // 4. Wysyłka danych Webhookiem
     try {
       const response = await fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
@@ -115,14 +99,14 @@ const handleBooking = async () => {
       });
 
       if (response.ok) {
-        setStep(3); // Przejdź do ekranu sukcesu
+        setStep(3);
       } else {
         throw new Error("Discord API error");
       }
     } catch (error) {
       toast({
         title: "Błąd wysyłki",
-        description: "Nie udało się przesłać rezerwacji do systemu. Spróbuj ponownie.",
+        description: "Nie udało się przesłać rezerwacji. Spróbuj ponownie.",
         variant: "destructive"
       });
     }
