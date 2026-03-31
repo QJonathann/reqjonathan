@@ -210,22 +210,42 @@ const handleBooking = async () => {
                           <CardDescription>Dostępne terminy</CardDescription>
                         </CardHeader>
                         <CardContent>
+
                           <div className="grid grid-cols-2 gap-3">
-                            {mockSlots.map((slot) => (
-                              <Button
-                                key={slot}
-                                variant={selectedSlot === slot ? "default" : "outline"}
-                                className={cn(
-                                  "h-12 rounded-2xl text-base font-bold transition-all",
-                                  selectedSlot === slot 
-                                    ? "shadow-lg shadow-primary/20 scale-105" 
-                                    : "bg-white hover:border-primary/50 hover:bg-primary/5 border-gray-100"
-                                )}
-                                onClick={() => setSelectedSlot(slot)}
-                              >
-                                {slot}
-                              </Button>
-                            ))}
+                            {mockSlots.map((slot) => {
+                              // 1. Łączymy wybraną datę z godziną ze slota
+                              const [hours, minutes] = slot.split(':').map(Number);
+                              const slotDateTime = new Date(date);
+                              slotDateTime.setHours(hours, minutes, 0, 0);
+
+                              // 2. Obliczamy barierę 12 godzin do przodu względem OBECNEJ chwili
+                              const twelveHoursFromNow = new Date();
+                              twelveHoursFromNow.setHours(twelveHoursFromNow.getHours() + 12);
+
+                              // 3. Sprawdzamy, czy slot jest zbyt wcześnie lub w przeszłości
+                              const isTooSoon = slotDateTime < twelveHoursFromNow;
+
+                              return (
+                                <Button
+                                  key={slot}
+                                  disabled={isTooSoon}
+                                  variant={selectedSlot === slot ? "default" : "outline"}
+                                  className={cn(
+                                    "h-12 rounded-2xl text-base font-bold transition-all",
+                                    isTooSoon 
+                                      ? "opacity-40 cursor-not-allowed bg-gray-50 border-gray-100 text-gray-400" // Wygląd zablokowanego
+                                      : selectedSlot === slot 
+                                        ? "shadow-lg shadow-primary/20 scale-105" 
+                                        : "bg-white hover:border-primary/50 hover:bg-primary/5 border-gray-100"
+                                  )}
+                                  onClick={() => {
+                                    if (!isTooSoon) setSelectedSlot(slot);
+                                  }}
+                                >
+                                  {slot}
+                                </Button>
+                              );
+                            })}
                           </div>
                         </CardContent>
                       </Card>
