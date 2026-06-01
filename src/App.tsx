@@ -364,18 +364,15 @@ export default function App() {
     showBanner(true, 'Pomyślnie usunięto rezerwację z bazy danych.');
   };
 
-  // Trigger manual resend of tutoring detail onto Discord 
+// Trigger manual resend of tutoring detail onto Discord Webhook
   const handleManualResendDiscord = async (app: TutoringApplication) => {
-    if (!discordConfig.Url) {
-      alert('Aby wysłać rezerwację, musisz najpierw skonfigurować i włączyć integrację Discord w panelu na dole.');
-      return;
-    }
-
-    const success = await sendDiscord(app, { ...discordConfig, isEnabled: true });
+    // Nie sprawdzamy webhookUrl, po prostu wymuszamy wysyłkę do /api/send-webhook
+    const success = await sendDiscordWebhook(app, { ...discordConfig, isEnabled: true });
+    
     if (success) {
       showBanner(true, `Pomyślnie wysłano/powtórzono rezerwację ${app.id} na Discorda!`);
     } else {
-      showBanner(false, 'Błąd podczas łączenia z Discordem. Sprawdź poprawność URL a w sekcji ustawień na dole strony.');
+      showBanner(false, 'Błąd podczas łączenia z Discordem. Sprawdź logi serwera na Vercelu.');
     }
   };
 
