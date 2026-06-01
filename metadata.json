@@ -1,0 +1,6 @@
+{
+  "name": "System Zgłoszeń i Kontaktów",
+  "description": "Nowoczesny, wysokokontrastowy formularz i panel zarządzania zgłoszeniami wsparcia.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
