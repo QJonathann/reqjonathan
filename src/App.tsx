@@ -261,7 +261,7 @@ export default function App() {
     showBanner(true, 'Zapisano pomyślnie konfigurację Discord .');
   };
 
-  // Create/Submit new application
+ // Create/Submit new application
   const handleCreateApplication = async (newAppData: Omit<TutoringApplication, 'id' | 'status' | 'dateCreated' | 'notes'>) => {
     const freshApp: TutoringApplication = {
       ...newAppData,
@@ -281,9 +281,11 @@ export default function App() {
     const updated = [freshApp, ...applications];
     saveApplications(updated);
 
-    // If Discord  is configured, pass it immediately!
-    if (discordConfig.isEnabled && discordConfig.Url) {
-      const success = await sendDiscord(freshApp);
+    if (discordConfig.isEnabled) {
+      // UWAGA: Upewnij się, że nazwa funkcji tutaj zgadza się z tą, którą masz w kodzie.
+      // Wcześniej nazywaliśmy ją sendDiscordWebhook, a Ty tutaj masz sendDiscord. 
+      const success = await sendDiscordWebhook(freshApp); 
+      
       if (success) {
         showBanner(true, `Pomyślnie zarejestrowano nową rezerwację od ucznia (${freshApp.studentName}).`);
       } else {
