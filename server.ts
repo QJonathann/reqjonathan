@@ -16,15 +16,20 @@ async function startServer() {
 
   // API endpoints FIRST
 
-  // API Route: Send application to Discord Webhook and return status
+// API Route: Send application to Discord Webhook and return status
   app.post('/api/send-webhook', async (req, res) => {
     try {
-      const { webhookUrl, payload } = req.body;
+      // 1. Pobieramy TYLKO treść wiadomości (payload) od klienta
+      const { payload } = req.body;
 
+      // 2. Serwer SAM odczytuje bezpieczną zmienną środowiskową
+      const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+
+      // Sprawdzamy, czy zmienna na serwerze Vercel/Node.js w ogóle istnieje
       if (!webhookUrl) {
-        return res.status(400).json({ 
+        return res.status(500).json({ 
           success: false, 
-          error: 'Brak zdefiniowanego adresu Webhook Discord.' 
+          error: 'Błąd konfiguracji serwera: Brak zdefiniowanej zmiennej DISCORD_WEBHOOK_URL.' 
         });
       }
 
@@ -42,7 +47,7 @@ async function startServer() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload), // Wysyłamy do Discorda sam payload
       });
 
       if (!discordResponse.ok) {
