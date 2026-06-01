@@ -39,7 +39,7 @@ export default function App() {
 
   // Discord Integration State
   const [discordConfig, setDiscordConfig] = useState<DiscordConfig>({
-    webhookUrl: process.env.DISCORD_WEBHOOK_URL || '',
+    webhookUrl: '',
     isEnabled: true,
     username: 'Korepetycje Bot 🎓',
   });
@@ -88,29 +88,28 @@ export default function App() {
       setApplications(INITIAL_APPLICATIONS);
     }
 
-    // 2. Discord configuration load
+ // 2. Discord configuration load
     const savedConfig = localStorage.getItem('tutoring_discord_config');
-    const defaultWebhook = process.env.DISCORD_WEBHOOK_URL || '';
+    
     if (savedConfig) {
       try {
         const parsed = JSON.parse(savedConfig);
-        if (!parsed.webhookUrl) {
-          parsed.webhookUrl = defaultWebhook;
-          parsed.isEnabled = true;
-          localStorage.setItem('tutoring_discord_config', JSON.stringify(parsed));
-        }
-        setDiscordConfig(parsed);
+        setDiscordConfig({
+          webhookUrl: '', // Frontend nic nie wie o linku, serwer się tym zajmie!
+          isEnabled: parsed.isEnabled !== undefined ? parsed.isEnabled : true,
+          username: parsed.username || 'Korepetycje Bot 🎓',
+        });
       } catch (err) {
         console.error('Błąd podczas parsowania konfiguracji Discord z localStorage:', err);
         setDiscordConfig({
-          webhookUrl: defaultWebhook,
+          webhookUrl: '',
           isEnabled: true,
           username: 'Korepetycje Bot 🎓',
         });
       }
     } else {
       const defaultConf = {
-        webhookUrl: defaultWebhook,
+        webhookUrl: '',
         isEnabled: true,
         username: 'Korepetycje Bot 🎓',
       };
