@@ -39,7 +39,7 @@ export default function App() {
 
   // Discord Integration State
   const [discordConfig, setDiscordConfig] = useState<DiscordConfig>({
-    webhookUrl: process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL || '',
+    webhookUrl: process.env.DISCORD_WEBHOOK_URL || '',
     isEnabled: true,
     username: 'Korepetycje Bot 🎓',
   });
@@ -90,7 +90,7 @@ export default function App() {
 
     // 2. Discord configuration load
     const savedConfig = localStorage.getItem('tutoring_discord_config');
-    const defaultWebhook = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL || '';
+    const defaultWebhook = process.env.DISCORD_WEBHOOK_URL || '';
     if (savedConfig) {
       try {
         const parsed = JSON.parse(savedConfig);
@@ -237,13 +237,13 @@ export default function App() {
     };
 
     try {
-      const response = await fetch('/api/send-webhook', {
+      const response = await fetch('/api/send-', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          webhookUrl: configToUse.webhookUrl,
+          Url: configToUse.Url,
           payload
         })
       });
@@ -251,7 +251,7 @@ export default function App() {
       const data = await response.json();
       return data.success;
     } catch (err) {
-      console.error('Błąd podczas wysyłania testu webhooka:', err);
+      console.error('Błąd podczas wysyłania testu a:', err);
       return false;
     }
   };
@@ -260,7 +260,7 @@ export default function App() {
   const handleSaveDiscordConfig = (newConfig: DiscordConfig) => {
     setDiscordConfig(newConfig);
     localStorage.setItem('tutoring_discord_config', JSON.stringify(newConfig));
-    showBanner(true, 'Zapisano pomyślnie konfigurację Discord Webhook.');
+    showBanner(true, 'Zapisano pomyślnie konfigurację Discord .');
   };
 
   // Create/Submit new application
@@ -283,9 +283,9 @@ export default function App() {
     const updated = [freshApp, ...applications];
     saveApplications(updated);
 
-    // If Discord Webhook is configured, pass it immediately!
-    if (discordConfig.isEnabled && discordConfig.webhookUrl) {
-      const success = await sendDiscordWebhook(freshApp);
+    // If Discord  is configured, pass it immediately!
+    if (discordConfig.isEnabled && discordConfig.Url) {
+      const success = await sendDiscord(freshApp);
       if (success) {
         showBanner(true, `Pomyślnie zarejestrowano nową rezerwację od ucznia (${freshApp.studentName}).`);
       } else {
@@ -366,18 +366,18 @@ export default function App() {
     showBanner(true, 'Pomyślnie usunięto rezerwację z bazy danych.');
   };
 
-  // Trigger manual resend of tutoring detail onto Discord Webhook
+  // Trigger manual resend of tutoring detail onto Discord 
   const handleManualResendDiscord = async (app: TutoringApplication) => {
-    if (!discordConfig.webhookUrl) {
+    if (!discordConfig.Url) {
       alert('Aby wysłać rezerwację, musisz najpierw skonfigurować i włączyć integrację Discord w panelu na dole.');
       return;
     }
 
-    const success = await sendDiscordWebhook(app, { ...discordConfig, isEnabled: true });
+    const success = await sendDiscord(app, { ...discordConfig, isEnabled: true });
     if (success) {
       showBanner(true, `Pomyślnie wysłano/powtórzono rezerwację ${app.id} na Discorda!`);
     } else {
-      showBanner(false, 'Błąd podczas łączenia z Discordem. Sprawdź poprawność URL webhooka w sekcji ustawień na dole strony.');
+      showBanner(false, 'Błąd podczas łączenia z Discordem. Sprawdź poprawność URL a w sekcji ustawień na dole strony.');
     }
   };
 
@@ -615,7 +615,7 @@ export default function App() {
                       : 'bg-white text-slate-800 border-slate-200 hover:bg-slate-100'
                   }`}
                 >
-                  Konfiguracja Discord Webhook
+                  Konfiguracja Discord 
                 </button>
               </div>
 
@@ -631,7 +631,7 @@ export default function App() {
                   <DiscordIntegrationPanel 
                     config={discordConfig}
                     onSave={handleSaveDiscordConfig}
-                    onTestWebhook={handleTestWebhook}
+                    onTest={handleTest}
                   />
                 )}
               </div>
