@@ -144,9 +144,10 @@ export default function App() {
     localStorage.setItem('tutoring_applications', JSON.stringify(newApps));
   };
 
-  // Helper to construct and send webhook payload via Server API
+// Helper to construct and send webhook payload via Server API
   const sendDiscordWebhook = async (app: TutoringApplication, configToUse = discordConfig): Promise<boolean> => {
-    if (!configToUse.webhookUrl || !configToUse.isEnabled) {
+    // Sprawdzamy TYLKO, czy powiadomienia są włączone. Link nas na frontendzie nie obchodzi.
+    if (!configToUse.isEnabled) {
       return false;
     }
 
@@ -195,15 +196,14 @@ export default function App() {
     };
 
     try {
+      // Frontend wysyła zapytanie DO TWOJEGO BEZPIECZNEGO FOLDERU API
       const response = await fetch('/api/send-webhook', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          webhookUrl: configToUse.webhookUrl,
-          payload
-        })
+        // Zauważ, że nie wysyłamy tu już "webhookUrl", tylko samą treść!
+        body: JSON.stringify({ payload })
       });
 
       const data = await response.json();
@@ -213,7 +213,6 @@ export default function App() {
       return false;
     }
   };
-
   // Trigger test webhook message
   const handleTestWebhook = async (configToUse: DiscordConfig): Promise<boolean> => {
     const payload = {
