@@ -505,8 +505,8 @@ export default function App() {
                 <a href="tel:+48796305827" className="hover:text-blue-500 transition-colors">
                   +48 796 305 827
                 </a>
-                <a href="mailto:contact.qjonathan@gmail.com" className="hover:text-blue-500 transition-colors">
-                  contact.qjonathan@gmail.com
+                <a href="mailto:kontakt.nauka20@gmail.com" className="hover:text-blue-500 transition-colors">
+                  kontakt.nauka20@gmail.com
                 </a>
               </div>
             </div>
@@ -544,7 +544,7 @@ export default function App() {
           {/* Copyright and Bottom Row */}
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-600">
             <p className="mx-auto text-center">
-              &copy; 2026 qJonathan.pl Wszelkie prawa zastrzeżone.
+              &copy; 2026 Nauka20.pl Wszelkie prawa zastrzeżone.
             </p>
             
             {/* Discrete admin trigger built so we don't pollute the visual design but keep functionality accessible */}
